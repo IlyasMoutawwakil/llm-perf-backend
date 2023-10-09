@@ -1,0 +1,36 @@
+defaults:
+  - backend: pytorch # default backend
+  - benchmark: inference # default benchmark
+  - experiment # inheriting from experiment config
+  - _self_ # for hydra 1.1 compatibility
+  - override hydra/job_logging: colorlog # colorful logging
+  - override hydra/hydra_logging: colorlog # colorful logging
+
+hydra:
+  run:
+    dir: llm-experiments/{experiment_name}
+  job:
+    chdir: true
+
+experiment_name: {experiment_name}
+
+model: {model}
+hub_kwargs:
+  revision: {revision}
+  trust_remote_code: true
+
+device: cuda:0
+
+backend:
+  no_weights: true
+  torch_dtype: float16
+
+benchmark:
+  memory: true
+  energy: true
+
+  input_shapes:
+    batch_size: 1
+    sequence_length: 512
+
+  new_tokens: 1000
