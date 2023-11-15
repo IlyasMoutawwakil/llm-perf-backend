@@ -1,9 +1,7 @@
 name: Benchmarks on the DGX
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
   schedule:
     - cron: "0 0 * * *"
 
