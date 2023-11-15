@@ -1,2 +1,3 @@
-# llm-perf-backend
-The backend behind the LLM-Perf Leaderboard
+---
+license: apache-2.0
+---

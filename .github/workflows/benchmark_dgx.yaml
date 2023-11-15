@@ -1,0 +1,63 @@
+name: Benchmarks on the DGX
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 0 * * *"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  benchmark:
+    runs-on: hf-dgx-01
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build image
+        run: docker build
+          --file docker/cuda.dockerfile
+          --build-arg USER_ID=$(id -u)
+          --build-arg GROUP_ID=$(id -g)
+          --build-arg CUDA_VERSION=11.8.0
+          --build-arg TORCH_CUDA=cu118
+          --tag llm-perf-cuda:11.8.0
+          .
+
+      - name: Run tests
+        run: docker run
+          --rm
+          --net host
+          --pid host
+          --shm-size 64G
+          --env USE_CUDA="1"
+          --env MACHINE=$MACHINE
+          --env HF_TOKEN=$HF_TOKEN
+          --gpus '"device=4"'
+          --entrypoint /bin/bash
+          --volume $(pwd):/workspace/llm-perf
+          --volume $HOME/.cache/huggingface:/home/user/.cache/huggingface
+          --workdir /workspace/llm-perf
+          llm-perf-cuda:11.8.0
+          -c "
+          pip install -r requirements.txt &&
+          python src/pull_dataset.py &&
+          python src/webscrape_open_llm.py &&
+          python src/benchmark.py --config pytorch+cuda+float16 --machine $MACHINE &&
+          python src/benchmark.py --config pytorch+cuda+float16+bettertransformer --machine $MACHINE &&
+          python src/benchmark.py --config pytorch+cuda+float16+flash-attention-v2 --machine $MACHINE &&
+          python src/benchmark.py --config pytorch+cuda+float16+bnb-4bit --machine $MACHINE &&
+          python src/benchmark.py --config pytorch+cuda+float16+bnb-4bit+bettertransformer --machine $MACHINE &&
+          python src/benchmark.py --config pytorch+cuda+float16+bnb-4bit+flash-attention-v2 --machine $MACHINE &&
+          python src/benchmark.py --config pytorch+cuda+float16+gptq-4bit+exllama-v1 --machine $MACHINE &&
+          python src/benchmark.py --config pytorch+cuda+float16+gptq-4bit+exllama-v2 --machine $MACHINE &&
+          python src/benchmark.py --config pytorch+cuda+float32 --machine $MACHINE &&
+          python src/push_dataset.py
+          "
+        env:
+          MACHINE: hf-dgx-01
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}

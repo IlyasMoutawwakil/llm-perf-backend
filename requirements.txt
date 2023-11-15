@@ -1,5 +1,8 @@
-optimum-benchmark[onnxruntime-gpu]@git+https://github.com/huggingface/optimum-benchmark.git
-auto-gptq
+optimum-benchmark[report]@git+https://github.com/huggingface/optimum-benchmark.git
 bitsandbytes
-scipy
+flash-attn
+codecarbon
+auto-gptq
 einops
+scipy
+bs4

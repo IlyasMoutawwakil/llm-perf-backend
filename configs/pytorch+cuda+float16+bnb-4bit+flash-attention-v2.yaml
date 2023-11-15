@@ -1,0 +1,15 @@
+defaults:
+  - backend: pytorch
+  - _base_ # inheriting from base config
+  - _self_ # for hydra 1.1 compatibility
+
+experiment_name: pytorch+cuda+float16+bnb-4bit+bettertransformer
+device: cuda
+
+backend:
+  no_weights: true
+  torch_dtype: float16
+  use_flash_attention_v2: true
+  quantization_scheme: bnb
+  quantization_config:
+    load_in_4bit: true

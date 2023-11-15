@@ -1,0 +1,11 @@
+defaults:
+  - backend: pytorch
+  - _base_ # inheriting from base config
+  - _self_ # for hydra 1.1 compatibility
+
+experiment_name: pytorch+cuda+float16
+device: cuda
+
+backend:
+  no_weights: true
+  torch_dtype: float16
