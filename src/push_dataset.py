@@ -6,36 +6,39 @@ from huggingface_hub import HfApi
 HF_TOKEN = os.environ.get("HF_TOKEN", None)
 
 
-def push_dataset():
+def push_dataset(dataset_id: str, dataset_path: str):
+    HfApi().upload_folder(
+        token=HF_TOKEN,
+        repo_id=dataset_id,
+        delete_patterns="*",
+        repo_type="dataset",
+        folder_path=dataset_path,
+        commit_message="Update dataset",
+    )
+
+
+def main():
     argparser = ArgumentParser()
 
     argparser.add_argument(
-        "--dataset",
+        "--dataset-id",
         type=str,
         help="Dataset name",
         default="optimum/llm-perf-dataset",
     )
     argparser.add_argument(
-        "--folder",
+        "--dataset-path",
         type=str,
-        help="Folder name",
-        default="llm-perf-dataset",
+        help="Dataset path",
+        default="dataset",
     )
 
     args = argparser.parse_args()
+    dataset_id = args.dataset_id
+    dataset_path = args.dataset_path
 
-    repo_id = args.dataset
-    folder_path = args.folder
-
-    HfApi().upload_folder(
-        repo_id=repo_id,
-        folder_path=folder_path,
-        commit_message="Update dataset",
-        repo_type="dataset",
-        delete_patterns="*",
-        token=HF_TOKEN,
-    )
+    push_dataset(dataset_id, dataset_path)
 
 
 if __name__ == "__main__":
-    push_dataset()
+    main()

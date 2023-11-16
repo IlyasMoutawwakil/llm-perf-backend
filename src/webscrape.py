@@ -81,25 +81,28 @@ def process_leaderboard(df):
     df.drop(columns=["T"], inplace=True)
     df.rename(
         columns={
-            "Average ⬆️": "Score",
-            "Hub ❤️": "Likes",
-            "#Params (B)": "Size",
-            "Hub License": "License",
+            "Type": "type",
+            "Model": "model",
+            "Precision": "precision",
+            "Average ⬆️": "avg_score",
+            "Hub ❤️": "likes",
+            "#Params (B)": "size(B)",
+            "Hub License": "licence",
         },
         inplace=True,
     )
-    df.dropna(subset=["Model", "Score"], inplace=True)
-    df = df[df["Type"] == "pretrained"]
+    df.dropna(subset=["model", "avg_score"], inplace=True)
+    df = df[df["type"] == "pretrained"]
     df = df[
-        df["Precision"].isin(
+        df["precision"].isin(
             ["torch.float32", "torch.float16", "torch.bfloat16", "8bit", "4bit"]
         )
     ]
-    df.sort_values(by="Precision", ascending=False, inplace=True)
-    df.drop_duplicates(subset=["Model"], keep="first", inplace=True)
-    df["Arch"] = df["Model"].apply(get_model_arch)
-    df.sort_values(by=["Score"], ascending=False, inplace=True)
-    df = df[["Model", "Size", "Arch", "Score", "Likes"]]
+    df.sort_values(by="precision", ascending=False, inplace=True)
+    df.drop_duplicates(subset=["model"], keep="first", inplace=True)
+    df["architecture"] = df["model"].apply(get_model_arch)
+    df.sort_values(by=["avg_score"], ascending=False, inplace=True)
+    df = df[["model", "size(B)", "architecture", "avg_score", "Likes"]]
     return df
 
 
@@ -108,7 +111,7 @@ def main():
     list_data = get_list_data(json_data)
     open_llm_df = pd.DataFrame(list_data)
     open_llm_df = process_leaderboard(open_llm_df)
-    open_llm_df.to_csv("llm-perf-dataset/open-llm.csv", index=False)
+    open_llm_df.to_csv("dataset/open-llm.csv", index=False)
 
 
 if __name__ == "__main__":

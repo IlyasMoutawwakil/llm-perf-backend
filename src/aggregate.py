@@ -4,7 +4,7 @@ from pathlib import Path
 from optimum_benchmark.aggregators.gather import gather
 
 
-def aggregate_results():
+def main():
     parser = ArgumentParser()
 
     parser.add_argument(
@@ -17,9 +17,11 @@ def aggregate_results():
     args = parser.parse_args()
 
     machine = args.machine
-    full_report = gather(root_folders=[Path(f"llm-perf-dataset/{machine}")])
-    full_report.to_csv(f"llm-perf-dataset/{machine}/full-report.csv", index=False)
+    root_folders = [Path(f"dataset/{machine}")]
+
+    full_report = gather(root_folders=root_folders)
+    full_report.to_csv(f"dataset/{machine}/full-report.csv", index=False)
 
 
 if __name__ == "__main__":
-    aggregate_results()
+    main()

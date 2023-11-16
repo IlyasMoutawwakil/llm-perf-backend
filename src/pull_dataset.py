@@ -6,34 +6,37 @@ from huggingface_hub import snapshot_download
 HF_TOKEN = os.environ.get("HF_TOKEN", None)
 
 
-def pull_dataset():
+def pull_dataset(dataset_id: str, dataset_path: str):
+    snapshot_download(
+        token=HF_TOKEN,
+        repo_id=dataset_id,
+        local_dir=dataset_path,
+        repo_type="dataset",
+    )
+
+
+def main():
     argparser = ArgumentParser()
 
     argparser.add_argument(
-        "--dataset",
+        "--dataset-id",
         type=str,
         help="Dataset name",
         default="optimum/llm-perf-dataset",
     )
     argparser.add_argument(
-        "--folder",
+        "--dataset-path",
         type=str,
-        help="Folder name",
-        default="llm-perf-dataset",
+        help="Dataset path",
+        default="dataset",
     )
 
     args = argparser.parse_args()
+    dataset_id = args.dataset_id
+    dataset_path = args.dataset_path
 
-    repo_id = args.dataset
-    local_dir = args.folder
-
-    snapshot_download(
-        token=HF_TOKEN,
-        repo_id=repo_id,
-        local_dir=local_dir,
-        repo_type="dataset",
-    )
+    pull_dataset(dataset_id, dataset_path)
 
 
 if __name__ == "__main__":
-    pull_dataset()
+    main()

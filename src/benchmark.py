@@ -1,7 +1,22 @@
-from argparse import ArgumentParser
 import subprocess
+from argparse import ArgumentParser
 
 import pandas as pd
+
+
+def benchmark(config: str, model: str, machine: str):
+    print(f"Benchmarking model {model} on machine {machine} with config {config}")
+    subprocess.run(
+        [
+            "optimum-benchmark",
+            "--config-dir",
+            "configs",
+            "--config-name",
+            config,
+            f"model={model}",
+            f"hydra.run.dir=dataset/{machine}/{config}/{model}",
+        ],
+    )
 
 
 def main():
@@ -25,21 +40,9 @@ def main():
     config = args.config
     machine = args.machine
 
-    models = pd.read_csv("llm-perf-dataset/open-llm.csv")["Model"].tolist()
-
-    for model in models:
-        print(f"Benchmarking model {model}")
-        subprocess.run(
-            [
-                "optimum-benchmark",
-                "--config-dir",
-                "configs",
-                "--config-name",
-                config,
-                f"model={model}",
-                f"hydra.run.dir=llm-perf-dataset/{machine}/{config}/{model}",
-            ],
-        )
+    MODELS = pd.read_csv("dataset/open-llm.csv")["Model"].tolist()
+    for model in MODELS:
+        benchmark(config, model, machine)
 
 
 if __name__ == "__main__":
