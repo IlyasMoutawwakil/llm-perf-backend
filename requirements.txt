@@ -1,8 +1,5 @@
 optimum-benchmark[report]@git+https://github.com/huggingface/optimum-benchmark.git
-bitsandbytes
-flash-attn
 codecarbon
-auto-gptq
 einops
 scipy
 bs4
