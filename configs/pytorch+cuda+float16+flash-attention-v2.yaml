@@ -9,4 +9,4 @@ device: cuda
 backend:
   no_weights: true
   torch_dtype: float16
-  use_flash_attention_v2: true
+  use_flash_attention_2: true
