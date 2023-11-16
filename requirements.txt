@@ -1,5 +1,4 @@
-optimum-benchmark[report]@git+https://github.com/huggingface/optimum-benchmark.git
-codecarbon
-einops
-scipy
 bs4
+pandas
+transformers
+huggingface_hub

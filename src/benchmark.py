@@ -6,7 +6,7 @@ import pandas as pd
 
 def benchmark(config: str, model: str, machine: str):
     print(f"Benchmarking model {model} on machine {machine} with config {config}")
-    subprocess.run(
+    out = subprocess.run(
         [
             "optimum-benchmark",
             "--config-dir",
@@ -16,7 +16,26 @@ def benchmark(config: str, model: str, machine: str):
             f"model={model}",
             f"hydra.run.dir=dataset/{machine}/{config}/{model}",
         ],
+        capture_output=True,
     )
+
+    if out.returncode != 0:
+        print("Benchmarking failed")
+        subprocess.run(
+            [
+                "mkdir",
+                "-p",
+                f"dataset/{machine}-failed/{config}/{model}",
+            ],
+        )
+        subprocess.run(
+            [
+                "cp",
+                "-r",
+                f"dataset/{machine}/{config}/{model}/.",
+                f"dataset/{machine}-failed/{config}/{model}",
+            ],
+        )
 
 
 def main():
@@ -40,7 +59,7 @@ def main():
     config = args.config
     machine = args.machine
 
-    MODELS = pd.read_csv("dataset/open-llm.csv")["Model"].tolist()
+    MODELS = pd.read_csv("dataset/open-llm.csv").sort_values("Size")["Model"].tolist()
     for model in MODELS:
         benchmark(config, model, machine)
 

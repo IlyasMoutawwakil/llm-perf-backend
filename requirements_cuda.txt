@@ -1,0 +1,7 @@
+optimum-benchmark[report]@git+https://github.com/huggingface/optimum-benchmark.git
+--extra-index-url https://huggingface.github.io/autogptq-index/whl/cu118/
+auto-gptq
+bitsandbytes
+codecarbon
+einops
+scipy

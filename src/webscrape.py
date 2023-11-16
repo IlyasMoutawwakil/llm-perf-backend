@@ -111,6 +111,7 @@ def main():
     list_data = get_list_data(json_data)
     open_llm_df = pd.DataFrame(list_data)
     open_llm_df = process_leaderboard(open_llm_df)
+    os.makedirs("dataset", exist_ok=True)
     open_llm_df.to_csv("dataset/open-llm.csv", index=False)
 
 
