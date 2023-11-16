@@ -102,7 +102,7 @@ def process_leaderboard(df):
     df.drop_duplicates(subset=["model"], keep="first", inplace=True)
     df["architecture"] = df["model"].apply(get_model_arch)
     df.sort_values(by=["avg_score"], ascending=False, inplace=True)
-    df = df[["model", "size(B)", "architecture", "avg_score", "Likes"]]
+    df = df[["model", "size(B)", "architecture", "avg_score", "likes"]]
     return df
 
 
