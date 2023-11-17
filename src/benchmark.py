@@ -1,11 +1,21 @@
+import os
 import subprocess
 from argparse import ArgumentParser
 
 import pandas as pd
 
+MACHINE = os.environ.get("MACHINE", "unknown")
+HF_TOKEN = os.environ.get("HF_TOKEN", None)
 
-def benchmark(config: str, model: str, machine: str):
-    print(f"Benchmarking model {model} on machine {machine} with config {config}")
+
+def get_models():
+    open_llm = pd.read_csv("dataset/open-llm.csv")
+    models = open_llm.sort_values("size")["model"].tolist()
+    return models
+
+
+def benchmark(config: str, model: str):
+    print(f"Benchmarking model {model} with config {config} on machine {MACHINE}")
     out = subprocess.run(
         [
             "optimum-benchmark",
@@ -14,7 +24,7 @@ def benchmark(config: str, model: str, machine: str):
             "--config-name",
             config,
             f"model={model}",
-            f"hydra.run.dir=dataset/{machine}/{config}/{model}",
+            f"hydra.run.dir=dataset/{MACHINE}/{config}/{model}",
         ],
         capture_output=True,
     )
@@ -25,43 +35,43 @@ def benchmark(config: str, model: str, machine: str):
             [
                 "mkdir",
                 "-p",
-                f"dataset/{machine}-failed/{config}/{model}",
+                f"dataset/{MACHINE}-failed/{config}/{model}",
             ],
         )
         subprocess.run(
             [
                 "cp",
                 "-r",
-                f"dataset/{machine}/{config}/{model}/.",
-                f"dataset/{machine}-failed/{config}/{model}",
+                f"dataset/{MACHINE}/{config}/{model}/.",
+                f"dataset/{MACHINE}-failed/{config}/{model}",
+            ],
+        )
+    else:
+        print("Benchmarking succeeded")
+        subprocess.run(
+            [
+                "rm",
+                "-rf",
+                f"dataset/{MACHINE}-failed/{config}/{model}",
             ],
         )
 
 
 def main():
     parser = ArgumentParser()
-
     parser.add_argument(
         "--config",
         type=str,
         required=True,
         help="Path to the config directory",
     )
-    parser.add_argument(
-        "--machine",
-        type=str,
-        required=True,
-        help="Machine on which the benchmark is running",
-    )
 
     args = parser.parse_args()
-
     config = args.config
-    machine = args.machine
 
-    MODELS = pd.read_csv("dataset/open-llm.csv").sort_values("size")["model"].tolist()
-    for model in MODELS:
-        benchmark(config, model, machine)
+    models = get_models()
+    for model in models:
+        benchmark(config, model)
 
 
 if __name__ == "__main__":

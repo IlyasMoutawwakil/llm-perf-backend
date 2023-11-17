@@ -10,12 +10,12 @@ logging.set_verbosity_warning()
 HF_TOKEN = os.environ.get("HF_TOKEN", None)
 
 
-def pull_dataset(dataset_id: str, dataset_path: str):
+def pull_dataset(dataset_id: str):
     snapshot_download(
         token=HF_TOKEN,
         repo_id=dataset_id,
-        local_dir=dataset_path,
         repo_type="dataset",
+        local_dir="dataset",
     )
 
 
@@ -28,18 +28,11 @@ def main():
         help="Dataset name",
         default="optimum/llm-perf-dataset",
     )
-    argparser.add_argument(
-        "--dataset-path",
-        type=str,
-        help="Dataset path",
-        default="dataset",
-    )
 
     args = argparser.parse_args()
     dataset_id = args.dataset_id
-    dataset_path = args.dataset_path
 
-    pull_dataset(dataset_id, dataset_path)
+    pull_dataset(dataset_id)
 
 
 if __name__ == "__main__":
