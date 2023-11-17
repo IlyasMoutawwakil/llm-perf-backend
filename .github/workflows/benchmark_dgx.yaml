@@ -43,18 +43,18 @@ jobs:
           -c "pip install -r requirements/cuda.txt ;
           pip install packaging && pip install flash-attn --no-build-isolation ;
 
-          python src/pull_dataset.py ;
+          python scripts/pull_dataset.py ;
 
-          python src/benchmark.py --config pytorch+cuda+float16 ;
-          python src/benchmark.py --config pytorch+cuda+float32 ;
-          python src/benchmark.py --config pytorch+cuda+float16+bnb-4bit ;
-          python src/benchmark.py --config pytorch+cuda+float16+bettertransformer ;
-          python src/benchmark.py --config pytorch+cuda+float16+flash-attention-v2 ;
-          python src/benchmark.py --config pytorch+cuda+float16+gptq-4bit+exllama-v1 ;
-          python src/benchmark.py --config pytorch+cuda+float16+gptq-4bit+exllama-v2 ;
-          python src/benchmark.py --config pytorch+cuda+float16+bnb-4bit+bettertransformer ;
-          python src/benchmark.py --config pytorch+cuda+float16+bnb-4bit+flash-attention-v2 ;
+          python scripts/benchmark.py --config pytorch+cuda+float16 ;
+          python scripts/benchmark.py --config pytorch+cuda+float32 ;
+          python scripts/benchmark.py --config pytorch+cuda+float16+bnb-4bit ;
+          python scripts/benchmark.py --config pytorch+cuda+float16+bettertransformer ;
+          python scripts/benchmark.py --config pytorch+cuda+float16+flash-attention-v2 ;
+          python scripts/benchmark.py --config pytorch+cuda+float16+gptq-4bit+exllama-v1 ;
+          python scripts/benchmark.py --config pytorch+cuda+float16+gptq-4bit+exllama-v2 ;
+          python scripts/benchmark.py --config pytorch+cuda+float16+bnb-4bit+bettertransformer ;
+          python scripts/benchmark.py --config pytorch+cuda+float16+bnb-4bit+flash-attention-v2 ;
 
-          python src/push_dataset.py ;"
+          python scripts/push_dataset.py ;"
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}

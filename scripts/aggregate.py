@@ -1,7 +1,6 @@
 import os
 import subprocess
 
-
 MACHINE = os.environ.get("MACHINE", "unknown")
 
 
@@ -13,7 +12,7 @@ def main():
             "--root-folders",
             f"dataset/{MACHINE}",
             "--save-file",
-            f"dataset/{MACHINE}/full-report.csv",
+            f"dataset/{MACHINE}/perf-report.csv",
         ],
         capture_output=True,
     )

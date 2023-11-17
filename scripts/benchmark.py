@@ -1,7 +1,9 @@
 import os
+import shutil
 import subprocess
 from argparse import ArgumentParser
 
+from huggingface_hub.file_download import hf_hub_download
 import pandas as pd
 
 MACHINE = os.environ.get("MACHINE", "unknown")
@@ -9,8 +11,14 @@ HF_TOKEN = os.environ.get("HF_TOKEN", None)
 
 
 def get_models():
-    open_llm = pd.read_csv("dataset/open-llm.csv")
-    models = open_llm.sort_values("size")["model"].tolist()
+    open_llm_file = hf_hub_download(
+        repo_type="dataset",
+        filename="open-llm.csv",
+        use_auth_token=HF_TOKEN,
+        repo_id="optimum/llm-perf-dataset",
+    )
+    open_llm = pd.read_csv(open_llm_file)
+    models = open_llm.sort_values("Size")["Model"].tolist()
     return models
 
 
@@ -31,30 +39,13 @@ def benchmark(config: str, model: str):
 
     if out.returncode != 0:
         print("Benchmarking failed")
-        subprocess.run(
-            [
-                "mkdir",
-                "-p",
-                f"dataset/{MACHINE}-failed/{config}/{model}",
-            ],
-        )
-        subprocess.run(
-            [
-                "cp",
-                "-r",
-                f"dataset/{MACHINE}/{config}/{model}/.",
-                f"dataset/{MACHINE}-failed/{config}/{model}",
-            ],
+        shutil.copytree(
+            f"dataset/{MACHINE}/{config}/{model}",
+            f"dataset/{MACHINE}-failed/{config}/{model}",
         )
     else:
         print("Benchmarking succeeded")
-        subprocess.run(
-            [
-                "rm",
-                "-rf",
-                f"dataset/{MACHINE}-failed/{config}/{model}",
-            ],
-        )
+        shutil.rmtree(f"dataset/{MACHINE}/{config}/{model}")
 
 
 def main():
