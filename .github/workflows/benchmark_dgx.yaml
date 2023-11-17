@@ -32,8 +32,8 @@ jobs:
           --net host
           --pid host
           --env USE_CUDA="1"
-          --env MACHINE=hf-dgx-01
-          --env HF_TOKEN=$HF_TOKEN
+          --env MACHINE="hf-dgx-01"
+          --env HF_TOKEN="$HF_TOKEN"
           --gpus '"device=4"'
           --entrypoint /bin/bash
           --volume $(pwd):/workspace/llm-perf
