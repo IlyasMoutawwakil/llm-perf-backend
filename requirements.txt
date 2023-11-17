@@ -1,4 +1,0 @@
-bs4
-pandas
-transformers
-huggingface_hub

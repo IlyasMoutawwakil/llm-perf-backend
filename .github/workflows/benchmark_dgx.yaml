@@ -41,27 +41,21 @@ jobs:
           --workdir /workspace/llm-perf
           llm-perf-cuda:11.8.0
           -c "
-          pip install -r requirements.txt &&
+          pip install packaging && pip install flash-attn --no-build-isolation && pip install -r requirements/cuda.txt &&
 
-          python src/webscrape.py &&
-          python src/push_dataset.py --dataset-id optimum/llm-perf-dataset &&
-          python src/pull_dataset.py --dataset-id optimum/llm-perf-dataset &&
+          python src/pull_dataset.py --dataset-id optimum/llm-perf-dataset && python src/webscrape.py &&
 
-          pip install packaging && pip install flash-attn --no-build-isolation &&
-          pip install -r requirements_cuda.txt &&
+          python src/benchmark.py --config pytorch+cuda+float16 --machine $MACHINE &&
+          python src/benchmark.py --config pytorch+cuda+float32 --machine $MACHINE &&
+          python src/benchmark.py --config pytorch+cuda+float16+bnb-4bit --machine $MACHINE &&
+          python src/benchmark.py --config pytorch+cuda+float16+bettertransformer --machine $MACHINE &&
+          python src/benchmark.py --config pytorch+cuda+float16+flash-attention-v2 --machine $MACHINE &&
+          python src/benchmark.py --config pytorch+cuda+float16+gptq-4bit+exllama-v1 --machine $MACHINE &&
+          python src/benchmark.py --config pytorch+cuda+float16+gptq-4bit+exllama-v2 --machine $MACHINE &&
+          python src/benchmark.py --config pytorch+cuda+float16+bnb-4bit+bettertransformer --machine $MACHINE &&
+          python src/benchmark.py --config pytorch+cuda+float16+bnb-4bit+flash-attention-v2 --machine $MACHINE &&
 
-          python src/benchmark.py --config pytorch+cuda+float16 --machine hf-dgx-01 &&
-          python src/benchmark.py --config pytorch+cuda+float32 --machine hf-dgx-01 &&
-          python src/benchmark.py --config pytorch+cuda+float16+bnb-4bit --machine hf-dgx-01 &&
-          python src/benchmark.py --config pytorch+cuda+float16+bettertransformer --machine hf-dgx-01 &&
-          python src/benchmark.py --config pytorch+cuda+float16+flash-attention-v2 --machine hf-dgx-01 &&
-          python src/benchmark.py --config pytorch+cuda+float16+gptq-4bit+exllama-v1 --machine hf-dgx-01 &&
-          python src/benchmark.py --config pytorch+cuda+float16+gptq-4bit+exllama-v2 --machine hf-dgx-01 &&
-          python src/benchmark.py --config pytorch+cuda+float16+bnb-4bit+bettertransformer --machine hf-dgx-01 &&
-          python src/benchmark.py --config pytorch+cuda+float16+bnb-4bit+flash-attention-v2 --machine hf-dgx-01 &&
-          
-          python src/aggregate.py --machine hf-dgx-01 &&
-          python src/push_dataset.py --dataset-id optimum/llm-perf-dataset
+          python src/aggregate.py --machine $MACHINE && python src/push_dataset.py --dataset-id optimum/llm-perf-dataset
           "
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}

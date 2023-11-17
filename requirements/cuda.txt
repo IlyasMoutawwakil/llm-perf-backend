@@ -5,3 +5,7 @@ bitsandbytes
 codecarbon
 einops
 scipy
+bs4
+pandas
+transformers
+huggingface_hub

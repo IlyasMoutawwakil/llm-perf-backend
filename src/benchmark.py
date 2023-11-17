@@ -59,7 +59,7 @@ def main():
     config = args.config
     machine = args.machine
 
-    MODELS = pd.read_csv("dataset/open-llm.csv").sort_values("Size")["Model"].tolist()
+    MODELS = pd.read_csv("dataset/open-llm.csv").sort_values("size")["model"].tolist()
     for model in MODELS:
         benchmark(config, model, machine)
 

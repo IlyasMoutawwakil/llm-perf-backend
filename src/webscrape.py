@@ -84,14 +84,14 @@ def process_leaderboard(df):
             "Type": "type",
             "Model": "model",
             "Precision": "precision",
-            "Average ⬆️": "avg_score",
+            "Average ⬆️": "score",
             "Hub ❤️": "likes",
-            "#Params (B)": "size(B)",
+            "#Params (B)": "size",
             "Hub License": "licence",
         },
         inplace=True,
     )
-    df.dropna(subset=["model", "avg_score"], inplace=True)
+    df.dropna(subset=["model", "score"], inplace=True)
     df = df[df["type"] == "pretrained"]
     df = df[
         df["precision"].isin(
@@ -100,9 +100,9 @@ def process_leaderboard(df):
     ]
     df.sort_values(by="precision", ascending=False, inplace=True)
     df.drop_duplicates(subset=["model"], keep="first", inplace=True)
-    df["architecture"] = df["model"].apply(get_model_arch)
-    df.sort_values(by=["avg_score"], ascending=False, inplace=True)
-    df = df[["model", "size(B)", "architecture", "avg_score", "likes"]]
+    df["arch"] = df["model"].apply(get_model_arch)
+    df.sort_values(by=["score"], ascending=False, inplace=True)
+    df = df[["model", "size", "arch", "score", "likes"]]
     return df
 
 
