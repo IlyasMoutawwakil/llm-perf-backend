@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build_image_and_run_gpu_benchmarks:
+  build_image_and_run_benchmarks:
     strategy:
       matrix:
         runner: [hf-dgx-01]

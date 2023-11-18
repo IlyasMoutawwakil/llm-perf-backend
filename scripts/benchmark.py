@@ -39,6 +39,7 @@ def benchmark(config: str, model: str):
 
     if out.returncode != 0:
         print("Benchmarking failed")
+        shutil.rmtree(f"dataset/{MACHINE}/{config}/{model}")
         shutil.copytree(
             f"dataset/{MACHINE}/{config}/{model}",
             f"dataset/{MACHINE}-failed/{config}/{model}",
