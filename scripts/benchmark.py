@@ -23,7 +23,11 @@ def get_models():
 
 
 def benchmark(config: str, model: str):
-    print(f"Benchmarking model {model} with config {config} on machine {MACHINE}")
+    if os.path.exists(f"dataset/{MACHINE}/{config}/{model}/inference_results.csv"):
+        print(f">Skipping model {model} with config {config} on machine {MACHINE}")
+        return
+
+    print(f">Benchmarking model {model} with config {config} on machine {MACHINE}")
     out = subprocess.run(
         [
             "optimum-benchmark",
@@ -38,15 +42,22 @@ def benchmark(config: str, model: str):
     )
 
     if out.returncode != 0:
-        print("Benchmarking failed")
-        shutil.rmtree(f"dataset/{MACHINE}/{config}/{model}")
+        print(">Benchmarking failed")
+
+        # in case of failure, copy the dataset to the failed folder
+        if not os.path.exists(f"dataset/{MACHINE}-failed/{config}/{model}"):
+            shutil.rmtree(f"dataset/{MACHINE}-failed/{config}/{model}")
+
         shutil.copytree(
             f"dataset/{MACHINE}/{config}/{model}",
             f"dataset/{MACHINE}-failed/{config}/{model}",
         )
     else:
-        print("Benchmarking succeeded")
-        shutil.rmtree(f"dataset/{MACHINE}/{config}/{model}")
+        print(">Benchmarking succeeded")
+
+        # in case of success, remove the failed folder if it exists
+        if os.path.exists(f"dataset/{MACHINE}-failed/{config}/{model}"):
+            shutil.rmtree(f"dataset/{MACHINE}-failed/{config}/{model}")
 
 
 def main():
