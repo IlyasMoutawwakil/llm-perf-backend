@@ -13,7 +13,11 @@ def main():
         folder_path="dataset",
         commit_message="Update dataset",
         repo_id="optimum/llm-perf-dataset",
-        delete_patterns=[f"{MACHINE}/*", f"{MACHINE}-failed/*", "llm_list.csv"],
+        delete_patterns=[
+            f"{MACHINE}/*",
+            f"{MACHINE}-failed/*",
+            # "open-llm.csv",
+        ],
     )
 
 
