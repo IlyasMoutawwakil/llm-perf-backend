@@ -49,7 +49,8 @@ def benchmark(config: str, model: str):
         )
     else:
         print(">Benchmarking succeeded")
-        shutil.rmtree(f"dataset/{MACHINE}-failed/{config}/{model}")
+        if os.path.exists(f"dataset/{MACHINE}-failed/{config}/{model}"):
+            shutil.rmtree(f"dataset/{MACHINE}-failed/{config}/{model}")
 
 
 def main():
