@@ -16,7 +16,6 @@ def main():
         delete_patterns=[
             f"{MACHINE}/*",
             f"{MACHINE}-failed/*",
-            # "open-llm.csv",
         ],
     )
 

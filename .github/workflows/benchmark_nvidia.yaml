@@ -49,25 +49,26 @@ jobs:
           --volume $HOME/.cache/huggingface:/home/user/.cache/huggingface
           --workdir /workspace/llm-perf
           llm-perf-cuda:11.8.0
-          -c "pip install -r requirements/cuda.txt ;
-          pip install packaging ; pip install flash-attn --no-build-isolation ;
+          -c "echo 'Running benchmarks on GPU $IDEL_GPU' in $MACHINE ;
 
-          python scripts/pull_dataset.py ;
+          pip install -r requirements/cuda.txt && pip install flash-attn --no-build-isolation ;
 
-          python scripts/benchmark.py --config pytorch+cuda+float16 ;
-          python scripts/benchmark.py --config pytorch+cuda+float16+bnb-4bit ;
-          python scripts/benchmark.py --config pytorch+cuda+float16+bnb-8bit ;
-          python scripts/benchmark.py --config pytorch+cuda+float16+bettertransformer ;
-          python scripts/benchmark.py --config pytorch+cuda+float16+flash-attention-v2 ;
-          python scripts/benchmark.py --config pytorch+cuda+float16+gptq-4bit+cuda-fp16 ;
-          python scripts/benchmark.py --config pytorch+cuda+float16+gptq-4bit+exllama-v1 ;
-          python scripts/benchmark.py --config pytorch+cuda+float16+gptq-4bit+exllama-v2 ;
-          python scripts/benchmark.py --config pytorch+cuda+float16+bnb-4bit+bettertransformer ;
-          python scripts/benchmark.py --config pytorch+cuda+float16+bnb-8bit+bettertransformer ;
-          python scripts/benchmark.py --config pytorch+cuda+float16+bnb-4bit+flash-attention-v2 ;
-          python scripts/benchmark.py --config pytorch+cuda+float16+bnb-8bit+flash-attention-v2 ;
+          python scripts/pull_dataset.py &&
+          python scripts/benchmark.py --config pytorch+cuda+float16 &&
+          python scripts/benchmark.py --config pytorch+cuda+float16+bnb-4bit &&
+          python scripts/benchmark.py --config pytorch+cuda+float16+bnb-8bit &&
+          python scripts/benchmark.py --config pytorch+cuda+float16+bettertransformer &&
+          python scripts/benchmark.py --config pytorch+cuda+float16+flash-attention-v2 &&
+          python scripts/benchmark.py --config pytorch+cuda+float16+gptq-4bit+cuda-fp16 &&
+          python scripts/benchmark.py --config pytorch+cuda+float16+gptq-4bit+exllama-v1 &&
+          python scripts/benchmark.py --config pytorch+cuda+float16+gptq-4bit+exllama-v2 &&
+          python scripts/benchmark.py --config pytorch+cuda+float16+bnb-4bit+bettertransformer &&
+          python scripts/benchmark.py --config pytorch+cuda+float16+bnb-8bit+bettertransformer &&
+          python scripts/benchmark.py --config pytorch+cuda+float16+bnb-4bit+flash-attention-v2 &&
+          python scripts/benchmark.py --config pytorch+cuda+float16+bnb-8bit+flash-attention-v2 &&
+          python scripts/push_dataset.py
 
-          python scripts/push_dataset.py ;"
+          echo 'Done'"
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           MACHINE: ${{ matrix.runner }}
