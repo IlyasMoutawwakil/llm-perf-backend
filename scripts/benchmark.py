@@ -44,7 +44,7 @@ def benchmark(config: str, model: str):
     if out.returncode != 0:
         print(">Benchmarking failed")
         if not os.path.exists(f"dataset/{MACHINE}-failed/{config}/{model}"):
-            os.makedirs(f"dataset/{MACHINE}-failed/{config}/{model}")
+            shutil.rmtree(f"dataset/{MACHINE}-failed/{config}/{model}")
 
         shutil.move(
             f"dataset/{MACHINE}/{config}/{model}",
