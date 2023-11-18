@@ -1,20 +1,29 @@
-name: Benchmarks on the DGX
+name: NVIDIA benchmarks
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: "0 */6 * * *"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  benchmark:
-    runs-on: hf-dgx-01
+  build_image_and_run_gpu_benchmarks:
+    strategy:
+      matrix:
+        runner: [hf-dgx-01]
+
+    runs-on: ${{ matrix.runner }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Get idle GPU
+        run: |
+          python scripts/idle_gpu.py
+          IDEL_GPU=$(python scripts/idle_gpu.py)
 
       - name: Build image
         run: docker build
@@ -32,29 +41,33 @@ jobs:
           --net host
           --pid host
           --env USE_CUDA=1
-          --env MACHINE=hf-dgx-01
+          --env MACHINE=$MACHINE
           --env HF_TOKEN=$HF_TOKEN
-          --gpus '"device=4"'
+          --gpus '"device=$IDEL_GPU"'
           --entrypoint /bin/bash
           --volume $(pwd):/workspace/llm-perf
           --volume $HOME/.cache/huggingface:/home/user/.cache/huggingface
           --workdir /workspace/llm-perf
           llm-perf-cuda:11.8.0
           -c "pip install -r requirements/cuda.txt ;
-          pip install packaging && pip install flash-attn --no-build-isolation ;
+          pip install packaging ; pip install flash-attn --no-build-isolation ;
 
           python scripts/pull_dataset.py ;
 
           python scripts/benchmark.py --config pytorch+cuda+float16 ;
-          python scripts/benchmark.py --config pytorch+cuda+float32 ;
           python scripts/benchmark.py --config pytorch+cuda+float16+bnb-4bit ;
+          python scripts/benchmark.py --config pytorch+cuda+float16+bnb-8bit ;
           python scripts/benchmark.py --config pytorch+cuda+float16+bettertransformer ;
           python scripts/benchmark.py --config pytorch+cuda+float16+flash-attention-v2 ;
+          python scripts/benchmark.py --config pytorch+cuda+float16+gptq-4bit+cuda-fp16 ;
           python scripts/benchmark.py --config pytorch+cuda+float16+gptq-4bit+exllama-v1 ;
           python scripts/benchmark.py --config pytorch+cuda+float16+gptq-4bit+exllama-v2 ;
           python scripts/benchmark.py --config pytorch+cuda+float16+bnb-4bit+bettertransformer ;
+          python scripts/benchmark.py --config pytorch+cuda+float16+bnb-8bit+bettertransformer ;
           python scripts/benchmark.py --config pytorch+cuda+float16+bnb-4bit+flash-attention-v2 ;
+          python scripts/benchmark.py --config pytorch+cuda+float16+bnb-8bit+flash-attention-v2 ;
 
           python scripts/push_dataset.py ;"
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          MACHINE: ${{ matrix.runner }}
