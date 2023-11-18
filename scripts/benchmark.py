@@ -43,21 +43,13 @@ def benchmark(config: str, model: str):
 
     if out.returncode != 0:
         print(">Benchmarking failed")
-
-        # in case of failure, copy the dataset to the failed folder
-        if not os.path.exists(f"dataset/{MACHINE}-failed/{config}/{model}"):
-            shutil.rmtree(f"dataset/{MACHINE}-failed/{config}/{model}")
-
-        shutil.copytree(
+        shutil.move(
             f"dataset/{MACHINE}/{config}/{model}",
             f"dataset/{MACHINE}-failed/{config}/{model}",
         )
     else:
         print(">Benchmarking succeeded")
-
-        # in case of success, remove the failed folder if it exists
-        if os.path.exists(f"dataset/{MACHINE}-failed/{config}/{model}"):
-            shutil.rmtree(f"dataset/{MACHINE}-failed/{config}/{model}")
+        shutil.rmtree(f"dataset/{MACHINE}-failed/{config}/{model}")
 
 
 def main():
