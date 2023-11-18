@@ -43,7 +43,7 @@ jobs:
           --env USE_CUDA=1
           --env MACHINE=$MACHINE
           --env HF_TOKEN=$HF_TOKEN
-          --gpus '"device=$IDEL_GPU"'
+          --gpus device=$IDEL_GPU
           --entrypoint /bin/bash
           --volume $(pwd):/workspace/llm-perf
           --volume $HOME/.cache/huggingface:/home/user/.cache/huggingface
