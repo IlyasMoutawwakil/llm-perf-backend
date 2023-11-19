@@ -3,11 +3,12 @@ import shutil
 import subprocess
 from argparse import ArgumentParser
 
-from huggingface_hub.file_download import hf_hub_download
 import pandas as pd
+from huggingface_hub.file_download import hf_hub_download
 
-MACHINE = os.environ.get("MACHINE", "unknown")
+
 HF_TOKEN = os.environ.get("HF_TOKEN", None)
+MACHINE = os.environ.get("MACHINE", os.uname().nodename)
 
 
 def get_models():
@@ -23,9 +24,14 @@ def get_models():
 
 
 def benchmark(config: str, model: str):
+    # skip if inference_results.csv already exists
     if os.path.exists(f"dataset/{MACHINE}/{config}/{model}/inference_results.csv"):
         print(f">Skipping model {model} with config {config} on machine {MACHINE}")
         return
+
+    # remove failed experiment (must be failed since inference_results.csv is missing)
+    if os.path.exists(f"dataset/{MACHINE}/{config}/{model}"):
+        shutil.rmtree(f"dataset/{MACHINE}/{config}/{model}")
 
     print(f">Benchmarking model {model} with config {config} on machine {MACHINE}")
     out = subprocess.run(
@@ -38,22 +44,26 @@ def benchmark(config: str, model: str):
             f"model={model}",
             f"hydra.run.dir=dataset/{MACHINE}/{config}/{model}",
         ],
-        capture_output=True,
     )
 
-    if out.returncode != 0:
+    if out.returncode == 0:
+        print(">Benchmarking succeeded")
+
+        # remove previous failed experiment if it exists
+        if os.path.exists(f"dataset/{MACHINE}-failed/{config}/{model}"):
+            shutil.rmtree(f"dataset/{MACHINE}-failed/{config}/{model}")
+    else:
         print(">Benchmarking failed")
-        if not os.path.exists(f"dataset/{MACHINE}-failed/{config}/{model}"):
+
+        # remove previous failed experiment to put the new one in its place
+        if os.path.exists(f"dataset/{MACHINE}-failed/{config}/{model}"):
             shutil.rmtree(f"dataset/{MACHINE}-failed/{config}/{model}")
 
+        # move the new failed experiment to the failed folder
         shutil.move(
             f"dataset/{MACHINE}/{config}/{model}",
             f"dataset/{MACHINE}-failed/{config}/{model}",
         )
-    else:
-        print(">Benchmarking succeeded")
-        if os.path.exists(f"dataset/{MACHINE}-failed/{config}/{model}"):
-            shutil.rmtree(f"dataset/{MACHINE}-failed/{config}/{model}")
 
 
 def main():

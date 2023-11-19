@@ -2,8 +2,9 @@ import os
 
 from huggingface_hub import HfApi
 
-MACHINE = os.environ.get("MACHINE", "unknown")
+
 HF_TOKEN = os.environ.get("HF_TOKEN", None)
+MACHINE = os.environ.get("MACHINE", os.uname().nodename)
 
 
 def main():

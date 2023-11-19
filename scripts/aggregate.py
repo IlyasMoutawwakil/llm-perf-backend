@@ -1,7 +1,8 @@
 import os
 import subprocess
 
-MACHINE = os.environ.get("MACHINE", "unknown")
+
+MACHINE = os.environ.get("MACHINE", os.uname().nodename)
 
 
 def main():
