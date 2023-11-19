@@ -44,6 +44,7 @@ def benchmark(config: str, model: str):
             f"model={model}",
             f"hydra.run.dir=dataset/{MACHINE}/{config}/{model}",
         ],
+        capture_output=True,
     )
 
     if out.returncode == 0:
