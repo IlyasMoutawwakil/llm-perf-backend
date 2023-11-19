@@ -85,7 +85,7 @@ def get_idle_gpu():
     return None
 
 
-def benchmark(config: str, model: str, machine: str):
+def benchmark(config: str, model: str, machine: str, debug: bool = False):
     # skip if inference_results.csv already exists
     if os.path.exists(f"dataset/{machine}/{config}/{model}/inference_results.csv"):
         print(f">Model {model} with config {config} already benchmarked")
@@ -114,7 +114,7 @@ def benchmark(config: str, model: str, machine: str):
             f"hydra.run.dir=dataset/{machine}/{config}/{model}",
             f"hydra.job.env_set.CUDA_VISIBLE_DEVICES={idle_gpu_id}",
         ],
-        capture_output=True,
+        capture_output=not debug,
     )
 
     if out.returncode == 0:
@@ -142,15 +142,21 @@ def main():
         required=True,
         help="Path to the config directory",
     )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Debug mode",
+    )
 
     args = parser.parse_args()
 
+    debug = args.debug
     config = args.config
     models = get_models()
     machine = os.uname().nodename
 
     for model in models:
-        benchmark(config, model, machine)
+        benchmark(config, model, machine, debug=debug)
 
 
 if __name__ == "__main__":
