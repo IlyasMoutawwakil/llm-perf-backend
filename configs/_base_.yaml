@@ -11,11 +11,10 @@ hydra:
   job:
     chdir: true
     env_set:
-      CUDA_VISIBLE_DEVICES: 0
+      CUDA_VISIBLE_DEVICES: ???
       CUDA_DEVICE_ORDER: PCI_BUS_ID
 
 model: ???
-experiment_name: ???
 
 backend:
   initial_isolation_check: true
@@ -32,4 +31,5 @@ benchmark:
     sequence_length: 256
 
 hub_kwargs:
+  token: ???
   trust_remote_code: true

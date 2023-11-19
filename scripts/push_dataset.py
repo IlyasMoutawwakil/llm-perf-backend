@@ -4,10 +4,10 @@ from huggingface_hub import HfApi
 
 
 HF_TOKEN = os.environ.get("HF_TOKEN", None)
-MACHINE = os.environ.get("MACHINE", os.uname().nodename)
 
 
 def main():
+    machine = os.uname().nodename
     HfApi().upload_folder(
         token=HF_TOKEN,
         repo_type="dataset",
@@ -15,8 +15,8 @@ def main():
         commit_message="Update dataset",
         repo_id="optimum/llm-perf-dataset",
         delete_patterns=[
-            f"{MACHINE}/*",
-            f"{MACHINE}-failed/*",
+            f"{machine}/*",
+            f"{machine}-failed/*",
         ],
     )
 
