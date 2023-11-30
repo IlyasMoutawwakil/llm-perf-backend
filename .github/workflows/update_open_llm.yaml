@@ -1,4 +1,4 @@
-name: Update Open-LLM Leaderboard models list
+name: Update Open-LLM file
 
 on:
   workflow_dispatch:
