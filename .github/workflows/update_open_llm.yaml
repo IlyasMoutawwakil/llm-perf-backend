@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  run_misc_tests:
+  update_open_llm:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,7 +21,7 @@ jobs:
         with:
           python-version: 3.8
 
-      - name: Cloning web scrapper
+      - name: Cloning Weyaxi's Open-LLM Leaderboard scrapper
         run: |
           git clone https://github.com/Weyaxi/scrape-open-llm-leaderboard.git
 
