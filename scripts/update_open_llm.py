@@ -1,10 +1,14 @@
 import os
 
-from huggingface_hub import HfApi
+from huggingface_hub import HfApi, login
 from transformers import AutoConfig
 import pandas as pd
 
-TOKEN = os.environ.get("HF_TOKEN", None)
+HF_TOKEN = os.environ.get("HF_TOKEN", None)
+
+if HF_TOKEN is not None:
+    login(token=HF_TOKEN)
+
 ALL_COLUMNS = {
     "Type": "Type",
     "Model": "Model",
@@ -69,7 +73,6 @@ def main():
             path_or_fileobj="open-llm.csv",
             path_in_repo="open-llm.csv",
             repo_type="dataset",
-            token=TOKEN,
         )
     else:
         raise ValueError("No models found")
