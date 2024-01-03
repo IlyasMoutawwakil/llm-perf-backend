@@ -1,5 +1,6 @@
 defaults:
   - benchmark: inference # default benchmark
+  - launcher: process # isolated process launcher
   - experiment # inheriting from experiment config
   - _self_ # for hydra 1.1 compatibility
   - override hydra/job_logging: colorlog # colorful logging
@@ -7,30 +8,27 @@ defaults:
 
 hydra:
   run:
-    dir: ???
+    dir: dataset/${oc.env:HOSTNAME}/${experiment_name}/${model}
   job:
     chdir: true
     env_set:
-      CUDA_VISIBLE_DEVICES: ???
-      CUDA_DEVICE_ORDER: PCI_BUS_ID
       COUNTRY_ISO_CODE: FRA
-
-model: ???
+      OVERRIDE_BENCHMARKS: 0
+      CUDA_DEVICE_ORDER: PCI_BUS_ID
 
 backend:
-  initial_isolation_check: true
-  continous_isolation_check: true
+  continuous_isolation: true
 
 benchmark:
   duration: 10
   memory: true
   energy: true
 
-  new_tokens: 1000
   input_shapes:
     batch_size: 1
     sequence_length: 256
 
+  new_tokens: 256
+
 hub_kwargs:
-  token: ???
   trust_remote_code: true
