@@ -31,7 +31,7 @@ def main():
 
     HfApi().upload_folder(
         repo_type="dataset",
-        folder_path="llm-perf-dataset",
+        folder_path="dataset",
         commit_message="Update dataset",
         repo_id="optimum/llm-perf-dataset",
         delete_patterns=[f"{HOSTNAME}/*"],

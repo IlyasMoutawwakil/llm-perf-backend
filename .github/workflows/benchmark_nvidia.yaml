@@ -72,6 +72,6 @@ jobs:
           python scripts/benchmark.py --config pytorch+cuda+float16+gptq-4bit+exllama-v1 &&
           python scripts/benchmark.py --config pytorch+cuda+float16+gptq-4bit+exllama-v2 &&
 
-          python scripts/aggregate.py && python scripts/push_dataset.py"
+          python scripts/push_dataset.py"
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
