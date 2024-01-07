@@ -3,6 +3,7 @@ name: Update Open-LLM file
 on:
   workflow_dispatch:
   schedule:
+    # Every day at 00:00 UTC
     - cron: "0 0 * * *"
 
 concurrency:

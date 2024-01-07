@@ -3,7 +3,7 @@ name: LLM Perf Benchmarks on NVIDIA GPUs
 on:
   workflow_dispatch:
   schedule:
-    # every week on Monday at 00:00 UTC
+    # every Monday at 00:00 UTC
     - cron: "0 0 * * 1"
 
 concurrency:
