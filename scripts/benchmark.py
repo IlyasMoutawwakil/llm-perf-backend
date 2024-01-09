@@ -12,6 +12,8 @@ HF_TOKEN = os.environ.get("HF_TOKEN", None)
 if HF_TOKEN is not None:
     login(token=HF_TOKEN)
 
+HOSTNAME = os.environ.get("HOSTNAME", "UNKNOWN")
+
 
 def get_models():
     open_llm_file = hf_hub_download(
@@ -25,6 +27,12 @@ def get_models():
 
 
 def benchmark(config: str, model: str, debug: bool = False):
+    if os.path.exists(f"dataset/{HOSTNAME}/{config}/{model}/inference_results.csv"):
+        print(
+            f">The benchmark of model {model} with config {config} already exists, skipping ..."
+        )
+        return
+
     print(f">Benchmarking model {model} with config {config} ...")
     out = subprocess.run(
         [

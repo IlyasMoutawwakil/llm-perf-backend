@@ -51,7 +51,7 @@ jobs:
           --volume $(pwd):/workspace/llm-perf
           --workdir /workspace/llm-perf
           llm-perf-cuda:11.8.0
-          -c "pip install -r requirements/cuda.txt && pip install flash-attn --no-build-isolation ;
+          -c "pip install -r requirements/cuda118.txt --no-build-isolation ;
 
           python scripts/pull_dataset.py &&
 

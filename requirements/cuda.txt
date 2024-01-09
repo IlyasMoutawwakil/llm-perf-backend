@@ -1,7 +1,13 @@
+# optimum benchmark
 optimum-benchmark[report]@git+https://github.com/huggingface/optimum-benchmark.git
+# autoawq
+https://github.com/casper-hansen/AutoAWQ/releases/download/v0.1.8/autoawq-0.1.8+cu118-cp310-cp310-linux_x86_64.whl
+# autogptq
 --extra-index-url https://huggingface.github.io/autogptq-index/whl/cu118/
 auto-gptq
+# others
 bitsandbytes
+flash-attn
 codecarbon
 einops
 scipy
