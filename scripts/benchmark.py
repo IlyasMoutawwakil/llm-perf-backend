@@ -34,18 +34,22 @@ def benchmark(config: str, model: str, debug: bool = False):
         return
 
     print(f">Benchmarking model {model} with config {config} ...")
-    out = subprocess.run(
-        [
-            "optimum-benchmark",
-            "--config-dir",
-            "configs",
-            "--config-name",
-            config,
-            f"model={model}",
-        ],
-        timeout=60 * 10,  # 10 minutes timeout
-        capture_output=not debug,  # some privacy
-    )
+    try:
+        out = subprocess.run(
+            [
+                "optimum-benchmark",
+                "--config-dir",
+                "configs",
+                "--config-name",
+                config,
+                f"model={model}",
+            ],
+            timeout=60 * 10,  # 10 minutes timeout
+            capture_output=not debug,  # some privacy
+        )
+    except subprocess.TimeoutExpired:
+        print(f">The benchmark of model {model} with config {config} timed out !")
+        return
 
     # repeating myself because sometimes we get long outputs that overflow the terminal
     if out.returncode == 0:

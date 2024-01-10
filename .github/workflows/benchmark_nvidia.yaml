@@ -51,7 +51,7 @@ jobs:
           --volume $(pwd):/workspace/llm-perf
           --workdir /workspace/llm-perf
           llm-perf-cuda:11.8.0
-          -c "pip install -r requirements/cuda118.txt --no-build-isolation ;
+          -c "pip install packaging && pip install -r requirements/cuda.txt --no-build-isolation ;
 
           python scripts/pull_dataset.py &&
 
@@ -71,6 +71,9 @@ jobs:
           python scripts/benchmark.py --config pytorch+cuda+float16+gptq-4bit+cuda-fp16 &&
           python scripts/benchmark.py --config pytorch+cuda+float16+gptq-4bit+exllama-v1 &&
           python scripts/benchmark.py --config pytorch+cuda+float16+gptq-4bit+exllama-v2 &&
+
+          python scripts/benchmark.py --config pytorch+cuda+float16+awq-4bit+gemm &&
+          python scripts/benchmark.py --config pytorch+cuda+float16+awq-4bit+gemv &&
 
           python scripts/push_dataset.py"
         env:
