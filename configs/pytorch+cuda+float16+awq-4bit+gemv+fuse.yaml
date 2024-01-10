@@ -14,4 +14,4 @@ backend:
     bits: 4
     version: gemv
     do_fuse: true
-    fuse_max_seq_len: 512
+    fuse_max_seq_len: 256
