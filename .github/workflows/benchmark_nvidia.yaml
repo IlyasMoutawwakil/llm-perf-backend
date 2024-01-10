@@ -51,7 +51,7 @@ jobs:
           --volume $(pwd):/workspace/llm-perf
           --workdir /workspace/llm-perf
           llm-perf-cuda:11.8.0
-          -c "pip install packaging && pip install -r requirements/cuda.txt --no-build-isolation ;
+          -c "pip install packaging && pip install -r requirements/cuda.txt ;
 
           python scripts/pull_dataset.py &&
 
