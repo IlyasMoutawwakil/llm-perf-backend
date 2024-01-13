@@ -31,9 +31,10 @@ def main():
 
     print(">Uploading dataset to Hub")
     HfApi().upload_folder(
-        repo_id="optimum/llm-perf-dataset",
-        folder_path=f"dataset/{HOSTNAME}",
+        folder_path=f"dataset",
         commit_message="Update dataset",
+        allow_patterns=[f"{HOSTNAME}/*"],
+        repo_id="optimum/llm-perf-dataset",
         repo_type="dataset",
     )
 
