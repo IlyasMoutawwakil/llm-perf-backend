@@ -17,8 +17,8 @@ hydra:
       CUDA_VISIBLE_DEVICES: 0
       CUDA_DEVICE_ORDER: PCI_BUS_ID
 
-backend:
-  continuous_isolation: true
+launcher:
+  device_isolation: true
 
 benchmark:
   duration: 10

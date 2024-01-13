@@ -29,12 +29,12 @@ def main():
     else:
         raise Exception("Report generation failed")
 
+    print(">Uploading dataset to Hub")
     HfApi().upload_folder(
-        repo_type="dataset",
-        folder_path="dataset",
-        commit_message="Update dataset",
         repo_id="optimum/llm-perf-dataset",
-        delete_patterns=[f"{HOSTNAME}/*"],
+        folder_path=f"dataset/{HOSTNAME}",
+        commit_message="Update dataset",
+        repo_type="dataset",
     )
 
 
