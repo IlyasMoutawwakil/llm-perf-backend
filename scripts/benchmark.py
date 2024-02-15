@@ -67,7 +67,9 @@ def main():
     config = args.config
     debug = args.debug
 
-    for model in open_llm.sort_values("Size")["Model"].head(10):
+    counter = 0
+
+    for model in open_llm.sort_values("Size")["Model"]:
         # check if model+config already benchmarked
         if (
             llm_perf[
@@ -80,8 +82,12 @@ def main():
             )
             continue
 
-        # run benchmark
+        counter += 1
         benchmark(config, model, debug)
+
+        if counter == 10:
+            # 10 new models per run ?
+            break
 
 
 if __name__ == "__main__":
