@@ -52,6 +52,7 @@ jobs:
           --workdir /workspace/llm-perf
           llm-perf-cuda:11.8.0
           -c "pip install packaging && pip install -r requirements/cuda.txt ;
+          pip install optimum-benchmark[report]@git+https://github.com/huggingface/optimum-benchmark.git@0.0.1 ;
 
           python scripts/pull_dataset.py &&
 
