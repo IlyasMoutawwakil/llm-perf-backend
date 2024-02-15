@@ -62,21 +62,21 @@ def main():
 
     args = parser.parse_args()
 
-    llm_perf = pd.read_csv(f"dataset/{HOSTNAME}/perf-report.csv")
     open_llm = pd.read_csv("dataset/open-llm.csv")
+    custom_llm = pd.read_csv("dataset/custom-llm.csv")
+    models = pd.concat([open_llm, custom_llm]).sort_values("Size")["Model"].unique()
+
+    llm_perf = pd.read_csv(f"dataset/{HOSTNAME}/perf-report.csv")
     config = args.config
     debug = args.debug
-
     counter = 0
 
-    for model in open_llm.sort_values("Size")["Model"]:
+    for model in models:
         # check if model+config already benchmarked
-        if (
-            llm_perf[
-                (llm_perf["model"] == model) & (llm_perf["experiment_name"] == config)
-            ].shape[0]
-            > 0
-        ):
+        already_benchmarked = (
+            (llm_perf["experiment_name"] == config) & (llm_perf["model"] == model)
+        ).any()
+        if already_benchmarked:
             print(
                 f">The benchmark of model {model} with config {config} already exists, skipping ..."
             )
