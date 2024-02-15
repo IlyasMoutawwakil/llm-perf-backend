@@ -3,7 +3,6 @@ import subprocess
 from argparse import ArgumentParser
 
 import pandas as pd
-from huggingface_hub.file_download import hf_hub_download
 from huggingface_hub import login
 
 
@@ -13,17 +12,6 @@ if HF_TOKEN is not None:
     login(token=HF_TOKEN)
 
 HOSTNAME = os.environ.get("HOSTNAME", "UNKNOWN")
-
-
-def get_models():
-    open_llm_file = hf_hub_download(
-        repo_type="dataset",
-        filename="open-llm.csv",
-        repo_id="optimum/llm-perf-dataset",
-    )
-    open_llm = pd.read_csv(open_llm_file)
-    models = open_llm.sort_values("Size")["Model"].tolist()
-    return models
 
 
 def benchmark(config: str, model: str, debug: bool = False):
@@ -74,11 +62,24 @@ def main():
 
     args = parser.parse_args()
 
-    models = get_models()
+    llm_perf = pd.read_csv(f"dataset/{HOSTNAME}/perf-report.csv")
+    open_llm = pd.read_csv("dataset/open-llm.csv")
     config = args.config
     debug = args.debug
 
-    for model in models:
+    for model in open_llm.sort_values("Size")["Model"].head(10):
+        # check if model+config already benchmarked
+        if (
+            llm_perf[
+                (llm_perf["model"] == model) & (llm_perf["experiment_name"] == config)
+            ].shape[0]
+            > 0
+        ):
+            print(
+                f">The benchmark of model {model} with config {config} already exists, skipping ..."
+            )
+            continue
+
         # run benchmark
         benchmark(config, model, debug)
 

@@ -3,8 +3,8 @@ name: LLM Perf Benchmarks on NVIDIA GPUs
 on:
   workflow_dispatch:
   schedule:
-    # every Monday at 00:00 UTC
-    - cron: "0 0 * * 1"
+    # Every day at 00:00 UTC
+    - cron: "0 0 * * *"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -51,7 +51,7 @@ jobs:
           --volume $(pwd):/workspace/llm-perf
           --workdir /workspace/llm-perf
           llm-perf-cuda:11.8.0
-          -c "pip install packaging && pip install -r requirements/cuda.txt ;
+          -c "pip install packaging && pip install -r cu118.txt ;
           pip install optimum-benchmark[report]@git+https://github.com/huggingface/optimum-benchmark.git@0.0.1 ;
 
           python scripts/pull_dataset.py &&
