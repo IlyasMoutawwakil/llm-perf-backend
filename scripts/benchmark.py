@@ -7,11 +7,10 @@ from huggingface_hub import login
 
 
 HF_TOKEN = os.environ.get("HF_TOKEN", None)
+HOSTNAME = os.environ.get("HOSTNAME", "UNKNOWN")
 
 if HF_TOKEN is not None:
     login(token=HF_TOKEN)
-
-HOSTNAME = os.environ.get("HOSTNAME", "UNKNOWN")
 
 
 def benchmark(config: str, model: str, debug: bool = False):
