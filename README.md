@@ -1,3 +1,3 @@
 # LLM-Perf Backend
 
-This is the backend for the [LLM-Perf Leaderboard](https://huggingface.co/spaces/optimum/llm-perf-leaderboard). It is a set of scripts and Github Actions workflows that run the LLM-Perf benchmarks and publishes results to a dataset on the Hugging Face Hub.
+The LLM Perf backend is now maintained in the `llm-perf` branch the [Optimum-Benchmark](https://github.com/huggingface/optimum-benchmark/tree/llm-perf) repository.
