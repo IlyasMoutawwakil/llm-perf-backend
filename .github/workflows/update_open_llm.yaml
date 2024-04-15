@@ -29,8 +29,8 @@ jobs:
       - name: Install requirements
         run: |
           pip install --upgrade pip
-          pip install -r scrape-open-llm-leaderboard/requirements.txt
           pip install pandas transformers
+          pip install -r scrape-open-llm-leaderboard/requirements.txt
 
       - name: Run Weyaxi's Open-LLM Leaderboard scrapper
         run: |
